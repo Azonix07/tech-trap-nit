@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tech Trap NIT - Escape Room Challenge</title>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="questions.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            width: 100%;
+        }
+
+        .welcome-screen, .game-screen, .waiting-screen, .completed-screen {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        h1 {
+            color: #1e3c72;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        h2 {
+            color: #2a5298;
+            margin-bottom: 15px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #2a5298;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            background: #2a5298;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: #1e3c72;
+        }
+
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .timer-container {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .timer {
+            font-size: 48px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .room-info {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .question-card {
+            background: #f9f9f9;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 5px solid #2a5298;
+        }
+
+        .question-text {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 20px;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+
+        .options {
+            display: grid;
+            gap: 12px;
+        }
+
+        .option {
+            padding: 15px;
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 16px;
+        }
+
+        .option:hover {
+            border-color: #2a5298;
+            background: #f0f4ff;
+        }
+
+        .option.selected {
+            border-color: #2a5298;
+            background: #2a5298;
+            color: white;
+        }
+
+        .option.correct {
+            border-color: #4CAF50;
+            background: #4CAF50;
+            color: white;
+        }
+
+        .option.incorrect {
+            border-color: #f44336;
+            background: #f44336;
+            color: white;
+        }
+
+        .submit-btn {
+            margin-top: 20px;
+        }
+
+        .progress-bar {
+            background: #e0e0e0;
+            height: 8px;
+            border-radius: 4px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            height: 100%;
+            transition: width 0.3s;
+        }
+
+        .waiting-message {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #2a5298;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 30px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .score-display {
+            text-align: center;
+            font-size: 64px;
+            font-weight: bold;
+            color: #2a5298;
+            margin: 30px 0;
+        }
+
+        .feedback {
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-weight: 500;
+        }
+
+        .feedback.correct {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .feedback.incorrect {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .next-btn {
+            background: #4CAF50;
+            margin-top: 15px;
+        }
+
+        .next-btn:hover {
+            background: #45a049;
+        }
+
+        code {
+            background: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+    </style>
+</head>
+<body>
+    <!-- Welcome Screen -->
+    <div id="welcomeScreen" class="container">
+        <div class="welcome-screen">
+            <h1>🔐 Welcome to Tech Trap NIT</h1>
+            <p style="text-align: center; margin-bottom: 30px; color: #666;">
+                An Escape Room Coding Challenge Event
+            </p>
+            <div class="input-group">
+                <label for="nameInput">Your Name</label>
+                <input type="text" id="nameInput" placeholder="Enter your name" required>
+            </div>
+            <div class="input-group">
+                <label for="emailInput">Email Address</label>
+                <input type="email" id="emailInput" placeholder="Enter your email" required>
+            </div>
+            <button onclick="register()">Join Event</button>
+        </div>
+    </div>
+
+    <!-- Waiting Screen -->
+    <div id="waitingScreen" class="container hidden">
+        <div class="waiting-screen">
+            <h1>⏳ Waiting for Event to Start</h1>
+            <div class="waiting-message">
+                <div class="spinner"></div>
+                <p style="color: #666; font-size: 18px;">
+                    You're registered! Please wait for the admin to start the event.
+                </p>
+                <p style="color: #999; margin-top: 20px;">
+                    Make sure you're ready. The event will begin soon.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Game Screen -->
+    <div id="gameScreen" class="container hidden">
+        <div class="game-screen">
+            <div class="timer-container">
+                <div class="room-info" id="roomInfo">Room 1 of 5</div>
+                <div class="timer" id="timer">10:00</div>
+                <p>Time Remaining</p>
+            </div>
+
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+            </div>
+
+            <div id="questionsContainer">
+                <!-- Questions will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Completed Screen -->
+    <div id="completedScreen" class="container hidden">
+        <div class="completed-screen">
+            <h1>🎉 Event Completed!</h1>
+            <div class="score-display" id="finalScore">0/25</div>
+            <p style="text-align: center; color: #666; font-size: 18px;">
+                Thank you for participating in Tech Trap NIT!
+            </p>
+            <p style="text-align: center; color: #999; margin-top: 20px;">
+                Your responses have been recorded.
+            </p>
+        </div>
+    </div>
+
+    <script>
+        const socket = io();
+        let participantId = null;
+        let currentRoom = 1;
+        let userAnswers = {};
+        let totalCorrect = 0;
+        let currentQuestionIndex = 0;
+
+        function register() {
+            const name = document.getElementById('nameInput').value.trim();
+            const email = document.getElementById('emailInput').value.trim();
+
+            if (!name || !email) {
+                alert('Please enter both name and email');
+                return;
+            }
+
+            socket.emit('registerParticipant', { name, email });
+        }
+
+        socket.on('registered', (data) => {
+            participantId = data.participantId;
+            document.getElementById('welcomeScreen').classList.add('hidden');
+            document.getElementById('waitingScreen').classList.remove('hidden');
+        });
+
+        socket.on('eventStarted', (data) => {
+            currentRoom = data.currentRoom;
+            document.getElementById('waitingScreen').classList.add('hidden');
+            document.getElementById('gameScreen').classList.remove('hidden');
+            loadRoom(currentRoom);
+        });
+
+        socket.on('timerSync', (data) => {
+            const minutes = Math.floor(data.remaining / 60000);
+            const seconds = Math.floor((data.remaining % 60000) / 1000);
+            document.getElementById('timer').textContent = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        });
+
+        socket.on('roomChanged', (data) => {
+            currentRoom = data.currentRoom;
+            currentQuestionIndex = 0;
+            loadRoom(currentRoom);
+        });
+
+        socket.on('eventStopped', () => {
+            alert('Event has been stopped by admin');
+            location.reload();
+        });
+
+        socket.on('eventCompleted', () => {
+            document.getElementById('gameScreen').classList.add('hidden');
+            document.getElementById('completedScreen').classList.remove('hidden');
+            document.getElementById('finalScore').textContent = `${totalCorrect}/25`;
+        });
+
+        function loadRoom(roomNum) {
+            document.getElementById('roomInfo').textContent = `Room ${roomNum} of 5`;
+            const questions = codingQuestions[`room${roomNum}`];
+            currentQuestionIndex = 0;
+            displayQuestion(questions, currentQuestionIndex);
+        }
+
+        function displayQuestion(questions, index) {
+            if (index >= questions.length) {
+                document.getElementById('questionsContainer').innerHTML = `
+                    <div style="text-align: center; padding: 40px;">
+                        <h2>✅ Room Completed!</h2>
+                        <p style="color: #666; margin-top: 20px;">Waiting for next room...</p>
+                    </div>
+                `;
+                updateProgress();
+                return;
+            }
+
+            const question = questions[index];
+            const container = document.getElementById('questionsContainer');
+            
+            container.innerHTML = `
+                <div class="question-card">
+                    <h3 style="color: #2a5298; margin-bottom: 15px;">Question ${index + 1} of ${questions.length}</h3>
+                    <div class="question-text">${question.question}</div>
+                    <div class="options" id="options">
+                        ${question.options.map((opt, i) => `
+                            <div class="option" data-index="${i}" onclick="selectOption(${i})">
+                                ${String.fromCharCode(65 + i)}. ${opt}
+                            </div>
+                        `).join('')}
+                    </div>
+                    <div id="feedback"></div>
+                    <button class="submit-btn" id="submitBtn" onclick="submitAnswer()">Submit Answer</button>
+                </div>
+            `;
+            
+            updateProgress();
+        }
+
+        function selectOption(index) {
+            document.querySelectorAll('.option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            document.querySelector(`[data-index="${index}"]`).classList.add('selected');
+        }
+
+        function submitAnswer() {
+            const selected = document.querySelector('.option.selected');
+            if (!selected) {
+                alert('Please select an answer');
+                return;
+            }
+
+            const selectedIndex = parseInt(selected.dataset.index);
+            const questions = codingQuestions[`room${currentRoom}`];
+            const question = questions[currentQuestionIndex];
+            const isCorrect = selectedIndex === question.correctAnswer;
+
+            if (isCorrect) {
+                totalCorrect++;
+            }
+
+            // Store answer
+            if (!userAnswers[currentRoom]) {
+                userAnswers[currentRoom] = [];
+            }
+            userAnswers[currentRoom].push({
+                questionId: question.id,
+                answer: selectedIndex,
+                correct: isCorrect
+            });
+
+            // Send to server
+            socket.emit('submitAnswer', {
+                room: currentRoom,
+                questionId: question.id,
+                answer: selectedIndex
+            });
+
+            // Show feedback
+            const feedback = document.getElementById('feedback');
+            feedback.className = `feedback ${isCorrect ? 'correct' : 'incorrect'}`;
+            feedback.innerHTML = isCorrect 
+                ? '✅ Correct! Well done!' 
+                : `❌ Incorrect. The correct answer was: ${question.options[question.correctAnswer]}`;
+
+            // Highlight correct/incorrect
+            document.querySelectorAll('.option').forEach((opt, i) => {
+                opt.style.pointerEvents = 'none';
+                if (i === question.correctAnswer) {
+                    opt.classList.add('correct');
+                } else if (i === selectedIndex && !isCorrect) {
+                    opt.classList.add('incorrect');
+                }
+            });
+
+            // Replace submit button with next button
+            document.getElementById('submitBtn').outerHTML = 
+                '<button class="next-btn" onclick="nextQuestion()">Next Question →</button>';
+        }
+
+        function nextQuestion() {
+            const questions = codingQuestions[`room${currentRoom}`];
+            currentQuestionIndex++;
+            displayQuestion(questions, currentQuestionIndex);
+        }
+
+        function updateProgress() {
+            const totalQuestions = 5 * 5; // 5 rooms * 5 questions
+            const answeredQuestions = Object.values(userAnswers).reduce((sum, room) => sum + room.length, 0);
+            const progressPercent = (answeredQuestions / totalQuestions) * 100;
+            document.getElementById('progressFill').style.width = progressPercent + '%';
+        }
+
+        // Handle page refresh
+        window.addEventListener('beforeunload', (e) => {
+            if (participantId) {
+                e.preventDefault();
+                e.returnValue = '';
+            }
+        });
+    </script>
+</body>
+</html>

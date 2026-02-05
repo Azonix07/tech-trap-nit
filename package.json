@@ -1,0 +1,17 @@
+{
+  "name": "tech-trap-nit",
+  "version": "1.0.0",
+  "description": "Synchronized Escape Room Event Website for College",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": ["escape-room", "event", "websocket", "realtime"],
+  "author": "Azonix07",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2",
+    "socket.io": "^4.6.1"
+  }
+}
